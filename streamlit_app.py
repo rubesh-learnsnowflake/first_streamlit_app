@@ -4,20 +4,14 @@ import requests
 import snowflake.connector
 from urllib.error import URLError
 
-#import streamlit
-
 streamlit.title('Shed Red Blood')
 streamlit.header('The Vengeance entered the Grand Palace')
 streamlit.text('Cowardness was not in their dictionary')
 streamlit.text('Bravery forged with Honesty was the weapon used against Vengeance and Betrayal')
 streamlit.text('🍌🥭 War left both the states suffer from hunger and illness�🍇')
 
-#import pandas
 my_fruit_list = pandas.read_csv("https://uni-lab-files.s3.us-west-2.amazonaws.com/dabw/fruit_macros.txt")
 my_fruit_list = my_fruit_list.set_index('Fruit')
-
-# Let's put a pick list here so they can pick the fruit they want to include 
-#streamlit.multiselect("Pick some fruits:", list(my_fruit_list.index))
 
 fruits_selected = streamlit.multiselect("Pick some fruits:", list(my_fruit_list.index), ['Avocado', 'Strawberries'])
 fruits_to_show = my_fruit_list.loc[fruits_selected]
@@ -29,7 +23,6 @@ def get_fruityvice_data(this_fruit_choice):
     fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
     return fruityvice_normalized
 
-
 # New Section to display fruityvice api response
 streamlit.header ('Fruityvice Fruit Advice!')
 try: 
@@ -39,11 +32,8 @@ try:
     else:
         back_from_function = get_fruityvice_data(fruit_choice)
         streamlit.dataframe(back_from_function)
-
 except URLError as e:
     streamlit.error()
-
-
 
 # Snowflake Functions
 streamlit.header("The Fruit Load List contains:")
@@ -57,8 +47,6 @@ if streamlit.button('Get Fruit Load List'):
     my_data_rows = get_fruit_load_list()
     streamlit.dataframe(my_data_rows)
 
-#streamlit.stop()
-
 # Allow the end user to add the fruits to the list
 def insert_row_snowflake (new_fruit):
     with my_cnx.cursor() as my_cur:
@@ -71,3 +59,4 @@ if streamlit.button('Add a fruit to the list'):
     back_from_function = insert_row_snowflake(add_my_fruit)
     streamlit.text(back_from_function)
 
+streamlit.stop()
